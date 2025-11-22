@@ -1,0 +1,68 @@
+@main
+
+# Test file for repeat keyword functionality
+# Demonstrates both repeat N times and repeat-until loops
+
+alias LED_PIN = 13
+const int MAX_RETRIES = 5
+
+mut int counter = 0
+mut bool success = false
+
+on start {
+    pinMode(LED_PIN, OUTPUT)
+    
+    # Example 1: Repeat N times - Fixed number of iterations
+    print("Blinking LED 5 times...")
+    repeat 5 times {
+        digitalWrite(LED_PIN, HIGH)
+        wait 200ms
+        digitalWrite(LED_PIN, LOW)
+        wait 200ms
+    }
+    
+    print("Blink sequence complete!")
+}
+
+on loop {
+    # Example 2: Repeat until - Do-while style loop
+    # Keep trying until success or max retries reached
+    counter = 0
+    success = false
+    
+    repeat {
+        counter = counter + 1
+        print("Attempt:")
+        print(counter)
+        
+        # Simulate some operation that might succeed
+        mut int randomValue = analogRead(A0)
+        if (randomValue > 512) {
+            success = true
+            print("Operation succeeded!")
+        }
+        
+        wait 100ms
+    } until (success || counter >= MAX_RETRIES)
+    
+    if (!success) {
+        print("Max retries reached")
+    }
+    
+    # Example 3: Nested repeat loops
+    print("Starting nested pattern...")
+    repeat 3 times {
+        # Inner loop - blink fast
+        repeat 5 times {
+            digitalWrite(LED_PIN, HIGH)
+            wait 50ms
+            digitalWrite(LED_PIN, LOW)
+            wait 50ms
+        }
+        # Pause between patterns
+        wait 500ms
+    }
+    
+    # Wait before next iteration
+    wait 2s
+}

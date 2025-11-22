@@ -1,7 +1,7 @@
 // This extension provides language support and CLI integration for Ypsilon Script.
 
 const vscode = require('vscode');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 const path = require('path');
 
 function activate(context) {
@@ -27,8 +27,8 @@ function activate(context) {
 
         vscode.window.showInformationMessage('Building Ypsilon Script file...');
 
-        // Execute ys build command
-        exec(`ys build "${filePath}"`, { cwd }, (error, stdout, stderr) => {
+        // Execute ys build command with proper argument handling
+        execFile('ys', ['build', filePath], { cwd }, (error, stdout, stderr) => {
             if (error) {
                 vscode.window.showErrorMessage(`Build failed: ${stderr || error.message}`);
                 console.error('Build error:', error);
@@ -61,8 +61,8 @@ function activate(context) {
 
         vscode.window.showInformationMessage('Uploading to board...');
 
-        // Execute ys upload command
-        exec(`ys upload "${filePath}"`, { cwd }, (error, stdout, stderr) => {
+        // Execute ys upload command with proper argument handling
+        execFile('ys', ['upload', filePath], { cwd }, (error, stdout, stderr) => {
             if (error) {
                 vscode.window.showErrorMessage(`Upload failed: ${stderr || error.message}`);
                 console.error('Upload error:', error);
@@ -87,7 +87,7 @@ function activate(context) {
         vscode.window.showInformationMessage('Cleaning build artifacts...');
 
         // Execute ys clean command
-        exec('ys clean', { cwd }, (error, stdout, stderr) => {
+        execFile('ys', ['clean'], { cwd }, (error, stdout, stderr) => {
             if (error) {
                 vscode.window.showErrorMessage(`Clean failed: ${stderr || error.message}`);
                 console.error('Clean error:', error);
@@ -102,7 +102,7 @@ function activate(context) {
 
     // Command: Show YS CLI version
     let versionCommand = vscode.commands.registerCommand('ypsilon-script.version', async () => {
-        exec('ys --version', (error, stdout, stderr) => {
+        execFile('ys', ['--version'], (error, stdout, stderr) => {
             if (error) {
                 vscode.window.showErrorMessage('Ypsilon Script CLI not found. Please install it first.');
                 console.error('Version check error:', error);
