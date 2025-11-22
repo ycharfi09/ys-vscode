@@ -24,6 +24,13 @@
   "license": "MIT",
   "icon": "images/icon.png",
   "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:ypsilon-script",
+    "onCommand:ypsilon-script.build",
+    "onCommand:ypsilon-script.upload",
+    "onCommand:ypsilon-script.clean",
+    "onCommand:ypsilon-script.version"
+  ],
   "contributes": {
     "languages": [
       {
@@ -51,6 +58,58 @@
         "language": "ypsilon-script",
         "path": "./snippets/ypsilon-script.json"
       }
-    ]
+    ],
+    "commands": [
+      {
+        "command": "ypsilon-script.build",
+        "title": "YS: Build/Compile",
+        "category": "Ypsilon Script"
+      },
+      {
+        "command": "ypsilon-script.upload",
+        "title": "YS: Upload to Board",
+        "category": "Ypsilon Script"
+      },
+      {
+        "command": "ypsilon-script.clean",
+        "title": "YS: Clean Build Artifacts",
+        "category": "Ypsilon Script"
+      },
+      {
+        "command": "ypsilon-script.version",
+        "title": "YS: Show CLI Version",
+        "category": "Ypsilon Script"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceLangId == ypsilon-script",
+          "command": "ypsilon-script.build",
+          "group": "ypsilon-script@1"
+        },
+        {
+          "when": "resourceLangId == ypsilon-script",
+          "command": "ypsilon-script.upload",
+          "group": "ypsilon-script@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "ypsilon-script.build",
+          "when": "resourceLangId == ypsilon-script"
+        },
+        {
+          "command": "ypsilon-script.upload",
+          "when": "resourceLangId == ypsilon-script"
+        },
+        {
+          "command": "ypsilon-script.clean"
+        },
+        {
+          "command": "ypsilon-script.version"
+        }
+      ]
+    }
   }
 }

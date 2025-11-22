@@ -158,6 +158,24 @@
     ],
     "description": "For loop"
   },
+  "Repeat N Times": {
+    "prefix": "repeat",
+    "body": [
+      "repeat ${1:10} times {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Repeat N times loop"
+  },
+  "Repeat Until": {
+    "prefix": "repeatuntil",
+    "body": [
+      "repeat {",
+      "\t$0",
+      "} until (${1:condition})"
+    ],
+    "description": "Repeat until loop (do-while style)"
+  },
   "Match Expression": {
     "prefix": "match",
     "body": [

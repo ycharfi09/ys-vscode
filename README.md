@@ -11,7 +11,7 @@ This extension provides comprehensive language support for Ypsilon Script (.ys f
 
 ### 🎨 Syntax Highlighting
 - Keywords: `fn`, `class`, `struct`, `enum`, `on`, `match`, `switch`
-- Control flow: `if`, `else`, `while`, `for`, `return`, `break`, `continue`
+- Control flow: `if`, `else`, `while`, `for`, `repeat`, `until`, `times`, `return`, `break`, `continue`
 - Storage modifiers: `const`, `mut`, `react`
 - Events: `on start`, `on loop`, `interrupt`
 - Modern features: `task`, `atomic`, `signal`, `emit`, `load`, `alias`
@@ -45,6 +45,8 @@ Type these prefixes and press Tab to expand:
 - `if` / `ifelse` - Conditional statements
 - `while` - While loop
 - `for` - For loop
+- `repeat` - Repeat N times loop
+- `repeatuntil` - Repeat-until (do-while) loop
 - `match` - Pattern matching
 - `switch` - Switch statement
 
@@ -67,6 +69,21 @@ Type these prefixes and press Tab to expand:
 
 **Complete Examples:**
 - `ysblinkexample` - Full LED blink example
+
+### 🛠️ YS CLI Integration
+
+Execute Ypsilon Script CLI commands directly from VS Code:
+
+**Available Commands:**
+- `YS: Build/Compile` - Build the current YS file
+- `YS: Upload to Board` - Upload compiled code to the target board
+- `YS: Clean Build Artifacts` - Clean build directory
+- `YS: Show CLI Version` - Display installed YS CLI version
+
+**Access Commands:**
+- Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac) to open Command Palette
+- Type "YS:" to see all available commands
+- Or right-click in a `.ys` file to access Build and Upload commands from context menu
 
 ### 🔧 Smart Editing Features
 - **Auto-closing pairs** for brackets, parentheses, and quotes
@@ -157,7 +174,8 @@ Then reload VS Code.
 ## Requirements
 
 - Visual Studio Code 1.74.0 or higher
-- [Ypsilon Script Compiler](https://github.com/ycharfi09/ypsilon-script) (optional, for compilation)
+- [Ypsilon Script Compiler](https://github.com/ycharfi09/ypsilon-script) (optional, for syntax highlighting and snippets)
+- [YS CLI](https://github.com/ycharfi09/ypsilon-script) (required for Build/Upload commands)
 
 ## Language Overview
 
@@ -190,6 +208,8 @@ Ypsilon Script is designed for robotics and embedded systems with:
 | `struct` | Struct definition |
 | `if` | If statement |
 | `for` | For loop |
+| `repeat` | Repeat N times |
+| `repeatuntil` | Repeat-until loop |
 | `match` | Pattern matching |
 | `interrupt` | Interrupt handler |
 | `task` | Periodic task |

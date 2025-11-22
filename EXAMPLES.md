@@ -157,6 +157,20 @@ for (mut i: int = 0; i < 10; i = i + 1) {
 }
 ```
 
+**repeat** - Repeat N times
+```ypsilon-script
+repeat 10 times {
+    
+}
+```
+
+**repeatuntil** - Repeat-until loop (do-while style)
+```ypsilon-script
+repeat {
+    
+} until (condition)
+```
+
 **match** - Pattern matching
 ```ypsilon-script
 match value {
@@ -291,6 +305,24 @@ on start {
 }  # ← Click arrow here to fold
 ```
 
+### 6. YS CLI Integration
+
+Use built-in commands to build and upload your code:
+
+**Command Palette (Ctrl+Shift+P / Cmd+Shift+P):**
+- Type "YS: Build/Compile" to build the current file
+- Type "YS: Upload to Board" to upload to your Arduino/board
+- Type "YS: Clean Build Artifacts" to clean the build directory
+- Type "YS: Show CLI Version" to check your YS CLI version
+
+**Right-Click Context Menu:**
+- Right-click in any `.ys` file
+- Select "YS: Build/Compile" or "YS: Upload to Board"
+
+**Requirements:**
+- YS CLI must be installed and available in your PATH
+- For upload commands, ensure your board is connected
+
 ## Tips for Maximum Productivity
 
 ### 1. Use Snippets Liberally
@@ -319,7 +351,13 @@ Instead of typing everything:
 - Keep related code in separate `.ys` modules
 - Use comments with `#` to explain complex logic
 
-### 5. Quick Examples
+### 5. Use CLI Commands
+
+- Build your code with "YS: Build/Compile" before testing
+- Upload directly to board with "YS: Upload to Board"
+- Keep your build clean with "YS: Clean Build Artifacts"
+
+### 6. Quick Examples
 
 For learning or testing, use the complete example snippets:
 - `ysblinkexample` - Simple LED blink
