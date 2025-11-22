@@ -1,0 +1,186 @@
+@main
+
+# LED Blink Example - Test file for VS Code extension
+# This file demonstrates various Ypsilon Script features
+
+config {
+  board: arduino_uno,
+  clock: 16MHz,
+  uart: on,
+  port: auto
+}
+
+# Load external libraries
+load <Servo>
+
+# Aliases for better readability
+alias LED_PIN = 13
+alias BUTTON_PIN = 2
+alias SENSOR_PIN = A0
+
+# Enumerations for state management
+enum Mode { 
+    AUTO, 
+    MANUAL, 
+    SLEEP 
+}
+
+enum State {
+    IDLE,
+    RUNNING,
+    PAUSED,
+    ERROR
+}
+
+# Struct definition
+struct SensorData {
+    int value
+    int timestamp
+    bool isValid
+}
+
+# Constants
+const int THRESHOLD = 512
+const float SENSITIVITY = 0.75
+
+# Variables
+mut Mode currentMode = AUTO
+mut State systemState = IDLE
+mut int counter = 0
+react mut int pulseCount = 0
+
+# Class definition
+class Motor {
+    mut int speed
+    const int maxSpeed
+    
+    constructor(int initialSpeed, int max) {
+        self.speed = initialSpeed
+        self.maxSpeed = max
+    }
+    
+    fn accelerate(int amount) {
+        self.speed = self.speed + amount
+        if (self.speed > self.maxSpeed) {
+            self.speed = self.maxSpeed
+        }
+    }
+    
+    fn getSpeed() -> int {
+        return self.speed
+    }
+    
+    fn run() {
+        print("Motor running at speed:")
+        print(self.speed)
+    }
+}
+
+# Object instantiation
+mut Motor motor = new Motor(100, 255)
+
+# Functions
+fn readSensor(int pin) -> int {
+    mut int value = analogRead(pin)
+    return value
+}
+
+fn isAboveThreshold(int value) -> bool {
+    return value > THRESHOLD
+}
+
+# Interrupt handler
+interrupt buttonISR on BUTTON_PIN rising {
+    counter = counter + 1
+}
+
+# Event handlers
+on start {
+    pinMode(LED_PIN, OUTPUT)
+    pinMode(BUTTON_PIN, INPUT_PULLUP)
+    
+    motor.run()
+    print("System initialized")
+}
+
+on loop {
+    # Match expression for state handling
+    match currentMode {
+        AUTO => {
+            digitalWrite(LED_PIN, HIGH)
+            motor.accelerate(10)
+        },
+        MANUAL => {
+            digitalWrite(LED_PIN, LOW)
+            motor.accelerate(5)
+        },
+        SLEEP => {
+            digitalWrite(LED_PIN, LOW)
+        }
+    }
+    
+    # Read sensor
+    mut int sensorValue = readSensor(SENSOR_PIN)
+    
+    # Switch statement
+    switch systemState {
+        case IDLE {
+            print("System idle")
+        }
+        case RUNNING {
+            print("System running")
+            
+            # For loop
+            for (mut i: int = 0; i < 10; i = i + 1) {
+                print(i)
+            }
+        }
+        case PAUSED {
+            print("System paused")
+        }
+        default {
+            print("Unknown state")
+        }
+    }
+    
+    # Conditional logic
+    if (isAboveThreshold(sensorValue)) {
+        systemState = RUNNING
+    } else {
+        systemState = IDLE
+    }
+    
+    # While loop
+    mut int attempts = 0
+    while (attempts < 3) {
+        print("Attempt:")
+        print(attempts)
+        attempts = attempts + 1
+    }
+    
+    # Atomic block for interrupt safety
+    atomic {
+        pulseCount = pulseCount + 1
+    }
+    
+    # Time literals
+    wait 100ms
+}
+
+# Periodic task
+task statusUpdate every 1s {
+    print("Status update")
+    print(counter)
+}
+
+# Background task
+task monitor background {
+    mut int temp = analogRead(SENSOR_PIN)
+    if (temp > THRESHOLD) {
+        emit alert
+    }
+    wait 500ms
+}
+
+# Signal
+signal alert

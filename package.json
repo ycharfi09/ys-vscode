@@ -1,0 +1,60 @@
+{
+  "name": "ypsilon-script",
+  "displayName": "Ypsilon Script",
+  "description": "Language support for Ypsilon Script - A modern easy-to-use alternative to C++ and Arduino for robotics projects",
+  "version": "0.1.0",
+  "publisher": "ycharfi09",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "ypsilon",
+    "ypsilon-script",
+    "arduino",
+    "robotics",
+    "embedded"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ycharfi09/ys-vscode"
+  },
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "ypsilon-script",
+        "aliases": [
+          "Ypsilon Script",
+          "ypsilon-script",
+          "YS"
+        ],
+        "extensions": [
+          ".ys"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/ys-icon.png",
+          "dark": "./images/ys-icon.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ypsilon-script",
+        "scopeName": "source.ypsilon-script",
+        "path": "./syntaxes/ypsilon-script.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "ypsilon-script",
+        "path": "./snippets/ypsilon-script.json"
+      }
+    ]
+  }
+}

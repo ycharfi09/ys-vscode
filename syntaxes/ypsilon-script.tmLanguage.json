@@ -1,0 +1,194 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Ypsilon Script",
+  "scopeName": "source.ypsilon-script",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#directives" },
+    { "include": "#keywords" },
+    { "include": "#storage" },
+    { "include": "#types" },
+    { "include": "#constants" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#operators" },
+    { "include": "#functions" },
+    { "include": "#variables" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.ypsilon-script",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "name": "keyword.control.directive.ypsilon-script",
+          "match": "@(main|cpp|ininterrupt)\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.ypsilon-script",
+          "match": "\\b(if|else|while|for|match|switch|case|default|return|break|continue)\\b"
+        },
+        {
+          "name": "keyword.other.ypsilon-script",
+          "match": "\\b(on|interrupt|task|every|background|atomic|signal|emit|wait|timeout|load|use|config|alias|react)\\b"
+        },
+        {
+          "name": "keyword.control.event.ypsilon-script",
+          "match": "\\b(start|loop)\\b"
+        },
+        {
+          "name": "keyword.control.interrupt.ypsilon-script",
+          "match": "\\b(rising|falling|change|low|high)\\b"
+        },
+        {
+          "name": "keyword.operator.new.ypsilon-script",
+          "match": "\\b(new)\\b"
+        }
+      ]
+    },
+    "storage": {
+      "patterns": [
+        {
+          "name": "storage.type.class.ypsilon-script",
+          "match": "\\b(class|struct|enum)\\b"
+        },
+        {
+          "name": "storage.type.function.ypsilon-script",
+          "match": "\\b(fn|function|constructor)\\b"
+        },
+        {
+          "name": "storage.modifier.ypsilon-script",
+          "match": "\\b(const|mut|react)\\b"
+        }
+      ]
+    },
+    "types": {
+      "patterns": [
+        {
+          "name": "support.type.primitive.ypsilon-script",
+          "match": "\\b(int|i8|i16|i32|i64|u8|u16|u32|u64|float|f32|f64|bool|string|void)\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.ypsilon-script",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.language.arduino.ypsilon-script",
+          "match": "\\b(HIGH|LOW|INPUT|OUTPUT|INPUT_PULLUP)\\b"
+        },
+        {
+          "name": "variable.language.this.ypsilon-script",
+          "match": "\\b(self|this)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.ypsilon-script",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.ypsilon-script",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.ypsilon-script",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.ypsilon-script",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.time.ypsilon-script",
+          "match": "\\b\\d+(\\.\\d+)?(ms|s|us|min|h)\\b"
+        },
+        {
+          "name": "constant.numeric.hex.ypsilon-script",
+          "match": "\\b0[xX][0-9a-fA-F]+\\b"
+        },
+        {
+          "name": "constant.numeric.binary.ypsilon-script",
+          "match": "\\b0[bB][01]+\\b"
+        },
+        {
+          "name": "constant.numeric.float.ypsilon-script",
+          "match": "\\b\\d+\\.\\d+([eE][+-]?\\d+)?\\b"
+        },
+        {
+          "name": "constant.numeric.integer.ypsilon-script",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.arrow.ypsilon-script",
+          "match": "(=>|->)"
+        },
+        {
+          "name": "keyword.operator.comparison.ypsilon-script",
+          "match": "(==|!=|<=|>=|<|>)"
+        },
+        {
+          "name": "keyword.operator.logical.ypsilon-script",
+          "match": "(&&|\\|\\||!)"
+        },
+        {
+          "name": "keyword.operator.assignment.ypsilon-script",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.arithmetic.ypsilon-script",
+          "match": "(\\+|-|\\*|/|%)"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "entity.name.function.arduino.ypsilon-script",
+          "match": "\\b(pinMode|digitalWrite|digitalRead|analogWrite|analogRead|delay|delayMicroseconds|millis|micros|print|println|Serial|Wire|SPI|attachInterrupt|detachInterrupt|noInterrupts|interrupts)\\b"
+        },
+        {
+          "name": "entity.name.function.ypsilon-script",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(?=\\()"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "variable.other.ypsilon-script",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    }
+  }
+}

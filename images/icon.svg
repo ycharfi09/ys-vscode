@@ -1,0 +1,17 @@
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="128" height="128" rx="16" fill="#1e3a8a"/>
+  
+  <!-- Greek letter Upsilon (Υ) styled as "Y" -->
+  <g>
+    <path d="M 32 30 L 50 30 L 64 55 L 78 30 L 96 30 L 73 70 L 73 98 L 55 98 L 55 70 Z" 
+          fill="#60a5fa" 
+          stroke="#3b82f6" 
+          stroke-width="2"/>
+  </g>
+  
+  <!-- Accent dots representing script/embedded nature -->
+  <circle cx="40" cy="108" r="3" fill="#60a5fa"/>
+  <circle cx="64" cy="108" r="3" fill="#60a5fa"/>
+  <circle cx="88" cy="108" r="3" fill="#60a5fa"/>
+</svg>
