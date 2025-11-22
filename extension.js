@@ -15,9 +15,11 @@ function executeYscCommand(args, cwd, callback) {
     const isWindows = process.platform === 'win32';
     const command = isWindows ? 'npx.cmd' : 'npx';
     
+    // On Windows, npx requires the .cmd extension and shell mode for proper PATH resolution
+    // On Unix-like systems, spawn can directly execute npx without shell mode
     const child = spawn(command, ['ysc', ...args], { 
         cwd,
-        shell: isWindows // Use shell on Windows for better compatibility
+        shell: isWindows
     });
     
     let stdout = '';
