@@ -75,15 +75,15 @@ Type these prefixes and press Tab to expand:
 Execute Ypsilon Script CLI commands directly from VS Code:
 
 **Available Commands:**
-- `YS: Build/Compile` - Build the current YS file
+- `YS: Compile` - Compile the current YS file
 - `YS: Upload to Board` - Upload compiled code to the target board
-- `YS: Clean Build Artifacts` - Clean build directory
+- `YS: Run` - Run the current YS file
 - `YS: Show CLI Version` - Display installed YS CLI version
 
 **Access Commands:**
 - Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac) to open Command Palette
 - Type "YS:" to see all available commands
-- Or right-click in a `.ys` file to access Build and Upload commands from context menu
+- Or right-click in a `.ys` file to access Compile, Upload, and Run commands from context menu
 
 ### 🔧 Smart Editing Features
 - **Auto-closing pairs** for brackets, parentheses, and quotes

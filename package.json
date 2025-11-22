@@ -28,7 +28,7 @@
     "onLanguage:ypsilon-script",
     "onCommand:ypsilon-script.build",
     "onCommand:ypsilon-script.upload",
-    "onCommand:ypsilon-script.clean",
+    "onCommand:ypsilon-script.run",
     "onCommand:ypsilon-script.version"
   ],
   "contributes": {
@@ -62,7 +62,7 @@
     "commands": [
       {
         "command": "ypsilon-script.build",
-        "title": "YS: Build/Compile",
+        "title": "YS: Compile",
         "category": "Ypsilon Script"
       },
       {
@@ -71,8 +71,8 @@
         "category": "Ypsilon Script"
       },
       {
-        "command": "ypsilon-script.clean",
-        "title": "YS: Clean Build Artifacts",
+        "command": "ypsilon-script.run",
+        "title": "YS: Run",
         "category": "Ypsilon Script"
       },
       {
@@ -92,6 +92,11 @@
           "when": "resourceLangId == ypsilon-script",
           "command": "ypsilon-script.upload",
           "group": "ypsilon-script@2"
+        },
+        {
+          "when": "resourceLangId == ypsilon-script",
+          "command": "ypsilon-script.run",
+          "group": "ypsilon-script@3"
         }
       ],
       "commandPalette": [
@@ -104,7 +109,8 @@
           "when": "resourceLangId == ypsilon-script"
         },
         {
-          "command": "ypsilon-script.clean"
+          "command": "ypsilon-script.run",
+          "when": "resourceLangId == ypsilon-script"
         },
         {
           "command": "ypsilon-script.version"

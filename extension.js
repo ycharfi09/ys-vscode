@@ -7,11 +7,11 @@ const path = require('path');
 function activate(context) {
     console.log('Ypsilon Script extension is now active!');
 
-    // Command: Build/Compile YS file
+    // Command: Compile YS file
     let buildCommand = vscode.commands.registerCommand('ypsilon-script.build', async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
-            vscode.window.showErrorMessage('No active YS file to build');
+            vscode.window.showErrorMessage('No active YS file to compile');
             return;
         }
 
@@ -25,18 +25,18 @@ function activate(context) {
         const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
         const cwd = workspaceFolder ? workspaceFolder.uri.fsPath : path.dirname(filePath);
 
-        vscode.window.showInformationMessage('Building Ypsilon Script file...');
+        vscode.window.showInformationMessage('Compiling Ypsilon Script file...');
 
-        // Execute ysc build command with proper argument handling
-        execFile('ysc', ['build', filePath], { cwd }, (error, stdout, stderr) => {
+        // Execute ysc compile command with proper argument handling
+        execFile('ysc', ['compile', filePath], { cwd }, (error, stdout, stderr) => {
             if (error) {
-                vscode.window.showErrorMessage(`Build failed: ${stderr || error.message}`);
-                console.error('Build error:', error);
+                vscode.window.showErrorMessage(`Compilation failed: ${stderr || error.message}`);
+                console.error('Compilation error:', error);
                 return;
             }
-            vscode.window.showInformationMessage('Build successful!');
+            vscode.window.showInformationMessage('Compilation successful!');
             if (stdout) {
-                console.log('Build output:', stdout);
+                console.log('Compilation output:', stdout);
             }
         });
     });
@@ -75,27 +75,36 @@ function activate(context) {
         });
     });
 
-    // Command: Clean build artifacts
-    let cleanCommand = vscode.commands.registerCommand('ypsilon-script.clean', async () => {
-        const workspaceFolders = vscode.workspace.workspaceFolders;
-        if (!workspaceFolders) {
-            vscode.window.showErrorMessage('No workspace folder open');
+    // Command: Run YS file
+    let runCommand = vscode.commands.registerCommand('ypsilon-script.run', async () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showErrorMessage('No active YS file to run');
             return;
         }
 
-        const cwd = workspaceFolders[0].uri.fsPath;
-        vscode.window.showInformationMessage('Cleaning build artifacts...');
+        const document = editor.document;
+        if (document.languageId !== 'ypsilon-script') {
+            vscode.window.showErrorMessage('Current file is not a Ypsilon Script file');
+            return;
+        }
 
-        // Execute ysc clean command
-        execFile('ysc', ['clean'], { cwd }, (error, stdout, stderr) => {
+        const filePath = document.uri.fsPath;
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+        const cwd = workspaceFolder ? workspaceFolder.uri.fsPath : path.dirname(filePath);
+
+        vscode.window.showInformationMessage('Running Ypsilon Script file...');
+
+        // Execute ysc run command with proper argument handling
+        execFile('ysc', ['run', filePath], { cwd }, (error, stdout, stderr) => {
             if (error) {
-                vscode.window.showErrorMessage(`Clean failed: ${stderr || error.message}`);
-                console.error('Clean error:', error);
+                vscode.window.showErrorMessage(`Run failed: ${stderr || error.message}`);
+                console.error('Run error:', error);
                 return;
             }
-            vscode.window.showInformationMessage('Clean successful!');
+            vscode.window.showInformationMessage('Run completed!');
             if (stdout) {
-                console.log('Clean output:', stdout);
+                console.log('Run output:', stdout);
             }
         });
     });
@@ -114,7 +123,7 @@ function activate(context) {
 
     context.subscriptions.push(buildCommand);
     context.subscriptions.push(uploadCommand);
-    context.subscriptions.push(cleanCommand);
+    context.subscriptions.push(runCommand);
     context.subscriptions.push(versionCommand);
 }
 
