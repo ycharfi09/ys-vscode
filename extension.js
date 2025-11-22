@@ -22,25 +22,37 @@ function executeYscCommand(args, cwd, callback) {
     
     let stdout = '';
     let stderr = '';
+    let callbackCalled = false;
     
-    child.stdout.on('data', (data) => {
-        stdout += data.toString();
-    });
+    function invokeCallback(error, out, err) {
+        if (!callbackCalled) {
+            callbackCalled = true;
+            callback(error, out, err);
+        }
+    }
     
-    child.stderr.on('data', (data) => {
-        stderr += data.toString();
-    });
+    if (child.stdout) {
+        child.stdout.on('data', (data) => {
+            stdout += data.toString();
+        });
+    }
+    
+    if (child.stderr) {
+        child.stderr.on('data', (data) => {
+            stderr += data.toString();
+        });
+    }
     
     child.on('close', (code) => {
         if (code !== 0) {
-            callback(new Error(`Command exited with code ${code}`), stdout, stderr);
+            invokeCallback(new Error(`Command exited with code ${code}`), stdout, stderr);
         } else {
-            callback(null, stdout, stderr);
+            invokeCallback(null, stdout, stderr);
         }
     });
     
     child.on('error', (error) => {
-        callback(error, stdout, stderr);
+        invokeCallback(error, stdout, stderr);
     });
 }
 
