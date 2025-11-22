@@ -121,11 +121,32 @@ task blink every 500ms {
 4. Press Enter
 
 ### From Source
+
+#### Quick Install (Recommended)
+
+**Linux/macOS:**
+```bash
+git clone https://github.com/ycharfi09/ys-vscode.git
+cd ys-vscode
+./install.sh
+```
+
+**Windows:**
+```cmd
+git clone https://github.com/ycharfi09/ys-vscode.git
+cd ys-vscode
+install.bat
+```
+
+Then reload VS Code.
+
+#### Manual Install
+
 1. Clone this repository
 2. Copy the folder to your VS Code extensions directory:
-   - **Windows**: `%USERPROFILE%\.vscode\extensions`
-   - **macOS**: `~/.vscode/extensions`
-   - **Linux**: `~/.vscode/extensions`
+   - **Windows**: `%USERPROFILE%\.vscode\extensions\ypsilon-script`
+   - **macOS**: `~/.vscode/extensions/ypsilon-script`
+   - **Linux**: `~/.vscode/extensions/ypsilon-script`
 3. Reload VS Code
 
 ### For Development
