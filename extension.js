@@ -100,7 +100,7 @@ function activate(context) {
         });
     });
 
-    // Command: Show YS CLI version
+    // Command: Show YSC CLI version
     let versionCommand = vscode.commands.registerCommand('ypsilon-script.version', async () => {
         execFile('ysc', ['--version'], (error, stdout, stderr) => {
             if (error) {
