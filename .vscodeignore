@@ -1,0 +1,9 @@
+.vscode/**
+.vscode-test/**
+.gitignore
+.git/**
+node_modules/**
+*.vsix
+test-files/**
+DEVELOPMENT.md
+CONTRIBUTING.md

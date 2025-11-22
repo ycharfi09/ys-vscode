@@ -1,0 +1,348 @@
+{
+  "Main Entry Point": {
+    "prefix": "@main",
+    "body": [
+      "@main",
+      "",
+      "$0"
+    ],
+    "description": "Mark file as main entry point"
+  },
+  "Event: On Start": {
+    "prefix": "onstart",
+    "body": [
+      "on start {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Define startup event handler"
+  },
+  "Event: On Loop": {
+    "prefix": "onloop",
+    "body": [
+      "on loop {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Define main loop event handler"
+  },
+  "Basic Program": {
+    "prefix": "ysbasic",
+    "body": [
+      "@main",
+      "",
+      "const int ${1:LED_PIN} = ${2:13}",
+      "",
+      "on start {",
+      "\tpinMode(${1:LED_PIN}, OUTPUT)",
+      "}",
+      "",
+      "on loop {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Basic Ypsilon Script program structure"
+  },
+  "Constant Declaration": {
+    "prefix": "const",
+    "body": [
+      "const ${1:int} ${2:VARIABLE_NAME} = ${3:value}"
+    ],
+    "description": "Declare a constant variable"
+  },
+  "Mutable Variable": {
+    "prefix": "mut",
+    "body": [
+      "mut ${1:int} ${2:variableName} = ${3:0}"
+    ],
+    "description": "Declare a mutable variable"
+  },
+  "Reactive Variable": {
+    "prefix": "react",
+    "body": [
+      "react mut ${1:int} ${2:variableName} = ${3:0}"
+    ],
+    "description": "Declare a reactive (volatile) variable"
+  },
+  "Function": {
+    "prefix": "fn",
+    "body": [
+      "fn ${1:functionName}(${2:int} ${3:param}) -> ${4:int} {",
+      "\t${5:return ${3:param}}",
+      "}"
+    ],
+    "description": "Define a function"
+  },
+  "Void Function": {
+    "prefix": "fnvoid",
+    "body": [
+      "fn ${1:functionName}(${2:int} ${3:param}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Define a void function"
+  },
+  "Class": {
+    "prefix": "class",
+    "body": [
+      "class ${1:ClassName} {",
+      "\tmut ${2:int} ${3:property}",
+      "\t",
+      "\tconstructor(${2:int} ${4:initial}) {",
+      "\t\tself.${3:property} = ${4:initial}",
+      "\t}",
+      "\t",
+      "\tfn ${5:methodName}() -> ${2:int} {",
+      "\t\treturn self.${3:property}",
+      "\t}",
+      "}"
+    ],
+    "description": "Define a class"
+  },
+  "Enum": {
+    "prefix": "enum",
+    "body": [
+      "enum ${1:EnumName} {",
+      "\t${2:VARIANT1},",
+      "\t${3:VARIANT2},",
+      "\t${4:VARIANT3}",
+      "}"
+    ],
+    "description": "Define an enumeration"
+  },
+  "Struct": {
+    "prefix": "struct",
+    "body": [
+      "struct ${1:StructName} {",
+      "\t${2:int} ${3:field1}",
+      "\t${4:int} ${5:field2}",
+      "}"
+    ],
+    "description": "Define a struct"
+  },
+  "If Statement": {
+    "prefix": "if",
+    "body": [
+      "if (${1:condition}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "If statement"
+  },
+  "If-Else Statement": {
+    "prefix": "ifelse",
+    "body": [
+      "if (${1:condition}) {",
+      "\t${2}",
+      "} else {",
+      "\t${3}",
+      "}"
+    ],
+    "description": "If-else statement"
+  },
+  "While Loop": {
+    "prefix": "while",
+    "body": [
+      "while (${1:condition}) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "While loop"
+  },
+  "For Loop": {
+    "prefix": "for",
+    "body": [
+      "for (mut ${1:i}: int = ${2:0}; ${1:i} < ${3:10}; ${1:i} = ${1:i} + 1) {",
+      "\t$0",
+      "}"
+    ],
+    "description": "For loop"
+  },
+  "Match Expression": {
+    "prefix": "match",
+    "body": [
+      "match ${1:value} {",
+      "\t${2:pattern1} => ${3:action1},",
+      "\t${4:pattern2} => ${5:action2},",
+      "\t_ => ${6:default}",
+      "}"
+    ],
+    "description": "Match expression (pattern matching)"
+  },
+  "Switch Statement": {
+    "prefix": "switch",
+    "body": [
+      "switch ${1:value} {",
+      "\tcase ${2:value1} {",
+      "\t\t${3}",
+      "\t}",
+      "\tcase ${4:value2} {",
+      "\t\t${5}",
+      "\t}",
+      "\tdefault {",
+      "\t\t${6}",
+      "\t}",
+      "}"
+    ],
+    "description": "Switch statement"
+  },
+  "Interrupt Handler": {
+    "prefix": "interrupt",
+    "body": [
+      "interrupt ${1:handlerName} on ${2:PIN} ${3|rising,falling,change,low,high|} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Define an interrupt handler"
+  },
+  "Task Periodic": {
+    "prefix": "task",
+    "body": [
+      "task ${1:taskName} every ${2:500}ms {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Define a periodic task"
+  },
+  "Task Background": {
+    "prefix": "taskbg",
+    "body": [
+      "task ${1:taskName} background {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Define a background task"
+  },
+  "Atomic Block": {
+    "prefix": "atomic",
+    "body": [
+      "atomic {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Atomic block (interrupt-safe)"
+  },
+  "Config Block": {
+    "prefix": "config",
+    "body": [
+      "config {",
+      "\tboard: ${1|arduino_uno,arduino_mega,esp32,atmega328p|},",
+      "\tclock: ${2:16}MHz,",
+      "\tuart: ${3|on,off|},",
+      "\tport: ${4:auto}",
+      "}"
+    ],
+    "description": "Configuration block"
+  },
+  "Load Library": {
+    "prefix": "load",
+    "body": [
+      "load <${1:LibraryName}>"
+    ],
+    "description": "Load an Arduino library"
+  },
+  "Load Module": {
+    "prefix": "loadmod",
+    "body": [
+      "load <${1:module.ys}> as ${2:alias}"
+    ],
+    "description": "Load a YS module with alias"
+  },
+  "Alias": {
+    "prefix": "alias",
+    "body": [
+      "alias ${1:NAME} = ${2:value}"
+    ],
+    "description": "Create a pin or constant alias"
+  },
+  "Signal": {
+    "prefix": "signal",
+    "body": [
+      "signal ${1:signalName}"
+    ],
+    "description": "Declare a signal"
+  },
+  "Emit Signal": {
+    "prefix": "emit",
+    "body": [
+      "emit ${1:signalName}"
+    ],
+    "description": "Emit a signal"
+  },
+  "Arduino: Pin Mode": {
+    "prefix": "pinMode",
+    "body": [
+      "pinMode(${1:pin}, ${2|OUTPUT,INPUT,INPUT_PULLUP|})"
+    ],
+    "description": "Set pin mode"
+  },
+  "Arduino: Digital Write": {
+    "prefix": "digitalWrite",
+    "body": [
+      "digitalWrite(${1:pin}, ${2|HIGH,LOW|})"
+    ],
+    "description": "Write digital value to pin"
+  },
+  "Arduino: Digital Read": {
+    "prefix": "digitalRead",
+    "body": [
+      "mut ${1:value}: int = digitalRead(${2:pin})"
+    ],
+    "description": "Read digital value from pin"
+  },
+  "Arduino: Analog Write": {
+    "prefix": "analogWrite",
+    "body": [
+      "analogWrite(${1:pin}, ${2:value})"
+    ],
+    "description": "Write analog value (PWM) to pin"
+  },
+  "Arduino: Analog Read": {
+    "prefix": "analogRead",
+    "body": [
+      "mut ${1:value}: int = analogRead(${2:pin})"
+    ],
+    "description": "Read analog value from pin"
+  },
+  "Arduino: Delay": {
+    "prefix": "delay",
+    "body": [
+      "delay(${1:1000})"
+    ],
+    "description": "Delay in milliseconds"
+  },
+  "Arduino: Wait": {
+    "prefix": "wait",
+    "body": [
+      "wait ${1:100}ms"
+    ],
+    "description": "Wait with time literal"
+  },
+  "Print": {
+    "prefix": "print",
+    "body": [
+      "print(${1:value})"
+    ],
+    "description": "Print to serial"
+  },
+  "Blink LED Example": {
+    "prefix": "ysblinkexample",
+    "body": [
+      "@main",
+      "",
+      "alias LED_PIN = 13",
+      "",
+      "on start {",
+      "\tpinMode(LED_PIN, OUTPUT)",
+      "}",
+      "",
+      "on loop {",
+      "\tdigitalWrite(LED_PIN, HIGH)",
+      "\twait 1s",
+      "\tdigitalWrite(LED_PIN, LOW)",
+      "\twait 1s",
+      "}"
+    ],
+    "description": "Complete blink LED example"
+  }
+}
