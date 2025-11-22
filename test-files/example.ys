@@ -101,6 +101,14 @@ on start {
     
     motor.run()
     print("System initialized")
+    
+    # Repeat N times example
+    repeat 3 times {
+        digitalWrite(LED_PIN, HIGH)
+        wait 100ms
+        digitalWrite(LED_PIN, LOW)
+        wait 100ms
+    }
 }
 
 on loop {
@@ -162,6 +170,14 @@ on loop {
     atomic {
         pulseCount = pulseCount + 1
     }
+    
+    # Repeat until example
+    mut int retries = 0
+    repeat {
+        retries = retries + 1
+        print("Retry attempt:")
+        print(retries)
+    } until (retries >= 3)
     
     # Time literals
     wait 100ms
