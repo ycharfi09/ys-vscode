@@ -1,8 +1,48 @@
 // This extension provides language support and CLI integration for Ypsilon Script.
 
 const vscode = require('vscode');
-const { execFile } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
+
+/**
+ * Helper function to execute ysc commands via npx
+ * @param {string[]} args - Command arguments for ysc
+ * @param {string} cwd - Working directory
+ * @param {Function} callback - Callback function (error, stdout, stderr)
+ */
+function executeYscCommand(args, cwd, callback) {
+    // Use npx to run ysc, which handles npm-installed packages
+    const isWindows = process.platform === 'win32';
+    const command = isWindows ? 'npx.cmd' : 'npx';
+    
+    const child = spawn(command, ['ysc', ...args], { 
+        cwd,
+        shell: isWindows // Use shell on Windows for better compatibility
+    });
+    
+    let stdout = '';
+    let stderr = '';
+    
+    child.stdout.on('data', (data) => {
+        stdout += data.toString();
+    });
+    
+    child.stderr.on('data', (data) => {
+        stderr += data.toString();
+    });
+    
+    child.on('close', (code) => {
+        if (code !== 0) {
+            callback(new Error(`Command exited with code ${code}`), stdout, stderr);
+        } else {
+            callback(null, stdout, stderr);
+        }
+    });
+    
+    child.on('error', (error) => {
+        callback(error, stdout, stderr);
+    });
+}
 
 function activate(context) {
     console.log('Ypsilon Script extension is now active!');
@@ -28,7 +68,7 @@ function activate(context) {
         vscode.window.showInformationMessage('Compiling Ypsilon Script file...');
 
         // Execute ysc compile command with proper argument handling
-        execFile('ysc', ['compile', filePath], { cwd }, (error, stdout, stderr) => {
+        executeYscCommand(['compile', filePath], cwd, (error, stdout, stderr) => {
             if (error) {
                 vscode.window.showErrorMessage(`Compilation failed: ${stderr || error.message}`);
                 console.error('Compilation error:', error);
@@ -62,7 +102,7 @@ function activate(context) {
         vscode.window.showInformationMessage('Uploading to board...');
 
         // Execute ysc upload command with proper argument handling
-        execFile('ysc', ['upload', filePath], { cwd }, (error, stdout, stderr) => {
+        executeYscCommand(['upload', filePath], cwd, (error, stdout, stderr) => {
             if (error) {
                 vscode.window.showErrorMessage(`Upload failed: ${stderr || error.message}`);
                 console.error('Upload error:', error);
@@ -96,7 +136,7 @@ function activate(context) {
         vscode.window.showInformationMessage('Running Ypsilon Script file...');
 
         // Execute ysc run command with proper argument handling
-        execFile('ysc', ['run', filePath], { cwd }, (error, stdout, stderr) => {
+        executeYscCommand(['run', filePath], cwd, (error, stdout, stderr) => {
             if (error) {
                 vscode.window.showErrorMessage(`Run failed: ${stderr || error.message}`);
                 console.error('Run error:', error);
@@ -111,7 +151,7 @@ function activate(context) {
 
     // Command: Show YSC CLI version
     let versionCommand = vscode.commands.registerCommand('ypsilon-script.version', async () => {
-        execFile('ysc', ['--version'], (error, stdout, stderr) => {
+        executeYscCommand(['--version'], process.cwd(), (error, stdout, stderr) => {
             if (error) {
                 vscode.window.showErrorMessage('Ypsilon Script CLI not found. Please install it first.');
                 console.error('Version check error:', error);
