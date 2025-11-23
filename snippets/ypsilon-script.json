@@ -273,6 +273,13 @@
     ],
     "description": "Create a pin or constant alias"
   },
+  "Use Resource": {
+    "prefix": "use",
+    "body": [
+      "use ${1|I2C,I2C1,I2C2,SPI,SPI1,SPI2,UART,UART0,UART1,UART2,UART3,CAN,ADC,DAC,PWM,TIMER0,TIMER1,TIMER2,TIMER3|}"
+    ],
+    "description": "Declare resource ownership for safety checking"
+  },
   "Signal": {
     "prefix": "signal",
     "body": [

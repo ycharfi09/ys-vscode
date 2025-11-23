@@ -1,0 +1,55 @@
+@main
+
+# Test file for use keyword - Resource Ownership
+# This demonstrates the use of resource declarations for safety checking
+
+config {
+  board: arduino_uno,
+  clock: 16MHz,
+  uart: on,
+  port: auto
+}
+
+# Declare resource ownership
+use I2C1
+use SPI
+use UART0
+
+# Load I2C and SPI libraries
+load <Wire>
+load <SPI>
+
+alias LED_PIN = 13
+const int SENSOR_ADDRESS = 0x48
+
+mut int sensorData = 0
+
+on start {
+    pinMode(LED_PIN, OUTPUT)
+    
+    # Initialize I2C (using I2C1 resource)
+    print("Initializing I2C...")
+    
+    # Initialize SPI (using SPI resource)
+    print("Initializing SPI...")
+    
+    # Initialize UART (using UART0 resource)
+    print("System ready")
+}
+
+on loop {
+    # Read from I2C sensor
+    # This is safe because we declared 'use I2C1'
+    sensorData = analogRead(A0)
+    
+    # Output to UART
+    # This is safe because we declared 'use UART0'
+    print("Sensor data:")
+    print(sensorData)
+    
+    # Blink LED
+    digitalWrite(LED_PIN, HIGH)
+    wait 500ms
+    digitalWrite(LED_PIN, LOW)
+    wait 500ms
+}

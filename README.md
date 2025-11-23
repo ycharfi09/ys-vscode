@@ -58,6 +58,7 @@ Type these prefixes and press Tab to expand:
 - `config` - Configuration block
 - `load` / `loadmod` - Load library or module
 - `alias` - Create alias
+- `use` - Declare resource ownership
 - `signal` / `emit` - Signal declaration and emission
 
 **Arduino Functions:**
@@ -213,6 +214,9 @@ Ypsilon Script is designed for robotics and embedded systems with:
 | `match` | Pattern matching |
 | `interrupt` | Interrupt handler |
 | `task` | Periodic task |
+| `alias` | Create alias |
+| `use` | Resource ownership |
+| `load` | Load library |
 
 ## Contributing
 
