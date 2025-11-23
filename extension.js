@@ -78,7 +78,7 @@ class YpsilonCompletionProvider {
         
         // Add types
         TYPES.forEach(type => {
-            const item = new vscode.CompletionItem(type, vscode.CompletionItemKind.Class);
+            const item = new vscode.CompletionItem(type, vscode.CompletionItemKind.Keyword);
             item.detail = 'Type';
             completions.push(item);
         });
