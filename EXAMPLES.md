@@ -260,7 +260,99 @@ on loop {
 }
 ```
 
-### 3. Auto-Completion Features
+### 3. IntelliSense Features
+
+#### Auto-Completion
+
+The extension provides intelligent code completion as you type:
+
+**Trigger auto-completion:**
+- Start typing any keyword, function, or type
+- Press `Ctrl+Space` (Windows/Linux) or `Cmd+Space` (Mac) to manually trigger
+
+**What gets suggested:**
+```ypsilon-script
+# Type 'pi' and see suggestions for pinMode
+pinMode(
+
+# Type 'i' in a type context to see int, i8, i16, i32, i64
+const int value = 0
+
+# Type 'di' to see digitalWrite
+digitalWrite(LED_PIN, HIGH)
+
+# Type 'ma' to see match
+match currentMode {
+    
+}
+```
+
+#### Hover Documentation
+
+Hover your mouse over any function or keyword to see documentation:
+
+```ypsilon-script
+# Hover over 'digitalWrite' to see:
+# void digitalWrite(pin: int, value: int)
+# Write a HIGH or LOW value to a digital pin.
+digitalWrite(LED_PIN, HIGH)
+
+# Hover over 'analogRead' to see full signature and description
+mut int sensorValue = analogRead(SENSOR_PIN)
+```
+
+**Available for:**
+- All Arduino functions (pinMode, digitalWrite, analogRead, delay, etc.)
+- Keywords and control structures
+- Data types and constants
+- Directives (@main, @cpp, etc.)
+
+#### Signature Help
+
+Get parameter hints while typing function calls:
+
+```ypsilon-script
+# Type the opening parenthesis and see parameter hints
+pinMode(|)  # Shows: pin: int, mode: int
+
+# As you type, the active parameter is highlighted
+digitalWrite(LED_PIN, |)  # Highlights: value: int
+
+# Works with all Arduino functions
+map(value, 0, 1023, |)  # Shows remaining parameters
+```
+
+**Shortcuts:**
+- `Ctrl+Shift+Space` (Windows/Linux) or `Cmd+Shift+Space` (Mac) to manually trigger
+
+#### Code Navigation
+
+Navigate your code structure easily:
+
+**Outline View:**
+- Open the Explorer sidebar
+- Find the "Outline" section at the bottom
+- See all functions, classes, variables, and event handlers
+- Click any item to jump to it
+
+**Go to Symbol:**
+- Press `Ctrl+Shift+O` (Windows/Linux) or `Cmd+Shift+O` (Mac)
+- Type to filter symbols
+- Press Enter to jump to the symbol
+
+**Breadcrumbs:**
+- Enabled at the top of the editor
+- Shows your current location in the code structure
+- Click to navigate to parent symbols
+
+**Symbol types detected:**
+- Functions (fn)
+- Classes, structs, enums
+- Constants and variables
+- Event handlers (on start, on loop)
+- Tasks and interrupt handlers
+
+### 4. Auto-Completion Features
 
 #### Auto-Closing Pairs
 
@@ -284,7 +376,7 @@ on start {
 }
 ```
 
-### 4. Comments
+### 5. Comments
 
 Toggle line comments with `Ctrl+/` (Windows/Linux) or `Cmd+/` (Mac):
 
@@ -293,7 +385,7 @@ Toggle line comments with `Ctrl+/` (Windows/Linux) or `Cmd+/` (Mac):
 const int LED_PIN = 13  # Inline comment
 ```
 
-### 5. Code Folding
+### 6. Code Folding
 
 Click the arrow next to line numbers to fold/unfold code blocks:
 
@@ -305,7 +397,7 @@ on start {
 }  # ← Click arrow here to fold
 ```
 
-### 6. YS CLI Integration
+### 7. YS CLI Integration
 
 Use built-in commands to build and upload your code:
 
@@ -332,32 +424,40 @@ Instead of typing everything:
 - Type `class` + Tab for class templates
 - Type `if` + Tab for conditional blocks
 
-### 2. Let Auto-Complete Help
+### 2. Let IntelliSense Help You Code Faster
+
+- Start typing and wait for suggestions to appear automatically
+- Press `Ctrl+Space` / `Cmd+Space` to manually trigger auto-completion
+- Hover over functions to see their documentation
+- Use `Ctrl+Shift+Space` / `Cmd+Shift+Space` for parameter hints
+- Press `Ctrl+Shift+O` / `Cmd+Shift+O` to quickly find and jump to any symbol
+- Use the Outline view to see your code structure at a glance
+
+### 3. Let Auto-Complete Help
 
 - Type opening brackets and let them close automatically
 - Use Tab to move between snippet placeholders
-- Press `Ctrl+Space` to trigger IntelliSense
 
-### 3. Navigate with Keyboard
+### 4. Navigate with Keyboard
 
 - `Ctrl+]` / `Cmd+]` - Indent line
 - `Ctrl+[` / `Cmd+[` - Outdent line
 - `Ctrl+/` / `Cmd+/` - Toggle comment
 - `Alt+Up/Down` - Move line up/down
 
-### 4. Organize Your Code
+### 5. Organize Your Code
 
 - Use code folding for large blocks
 - Keep related code in separate `.ys` modules
 - Use comments with `#` to explain complex logic
 
-### 5. Use CLI Commands
+### 6. Use CLI Commands
 
 - Build your code with "YS: Build/Compile" before testing
 - Upload directly to board with "YS: Upload to Board"
 - Keep your build clean with "YS: Clean Build Artifacts"
 
-### 6. Quick Examples
+### 7. Quick Examples
 
 For learning or testing, use the complete example snippets:
 - `ysblinkexample` - Simple LED blink
