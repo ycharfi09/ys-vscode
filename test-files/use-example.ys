@@ -38,8 +38,8 @@ on start {
 }
 
 on loop {
-    # Read from I2C sensor
-    # This is safe because we declared 'use I2C1'
+    # Read from analog sensor (ADC)
+    # Note: I2C1 and SPI resources are available when needed
     sensorData = analogRead(A0)
     
     # Output to UART
