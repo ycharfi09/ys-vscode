@@ -78,7 +78,7 @@ class YpsilonCompletionProvider {
         
         // Add types
         TYPES.forEach(type => {
-            const item = new vscode.CompletionItem(type, vscode.CompletionItemKind.TypeParameter);
+            const item = new vscode.CompletionItem(type, vscode.CompletionItemKind.Class);
             item.detail = 'Type';
             completions.push(item);
         });
@@ -167,13 +167,27 @@ class YpsilonSignatureHelpProvider {
         const line = document.lineAt(position.line).text;
         const beforeCursor = line.substring(0, position.character);
         
-        // Find function call
-        const match = beforeCursor.match(/(\w+)\s*\(/);
-        if (!match) return null;
+        // Find the most recent function call by searching backwards
+        let funcName = null;
+        let parenIndex = -1;
         
-        const funcName = match[1];
+        // Look for function name before the last opening paren
+        for (let i = beforeCursor.length - 1; i >= 0; i--) {
+            if (beforeCursor[i] === '(') {
+                parenIndex = i;
+                // Extract function name before the paren
+                const beforeParen = beforeCursor.substring(0, i);
+                const match = beforeParen.match(/(\w+)\s*$/);
+                if (match) {
+                    funcName = match[1];
+                }
+                break;
+            }
+        }
+        
+        if (!funcName) return null;
+        
         const func = ARDUINO_FUNCTIONS.find(f => f.name === funcName);
-        
         if (!func) return null;
         
         const signatureHelp = new vscode.SignatureHelp();
@@ -190,10 +204,11 @@ class YpsilonSignatureHelpProvider {
         signatureHelp.signatures = [signature];
         signatureHelp.activeSignature = 0;
         
-        // Calculate active parameter based on comma count
-        const paramMatch = beforeCursor.match(/\(/);
-        if (paramMatch) {
-            const afterParen = beforeCursor.substring(paramMatch.index + 1);
+        // Simple comma counting from the opening paren to cursor
+        // This is a basic implementation - more sophisticated parsing would handle nested calls
+        if (parenIndex >= 0) {
+            const afterParen = beforeCursor.substring(parenIndex + 1);
+            // Count commas, being aware this is simplified
             const commaCount = (afterParen.match(/,/g) || []).length;
             signatureHelp.activeParameter = Math.min(commaCount, func.params.length - 1);
         }
@@ -206,6 +221,12 @@ class YpsilonSignatureHelpProvider {
  * Document symbol provider for Ypsilon Script
  */
 class YpsilonDocumentSymbolProvider {
+    // Helper function to create a symbol
+    createSymbol(name, detail, kind, lineIndex, text) {
+        const range = new vscode.Range(lineIndex, 0, lineIndex, text.length);
+        return new vscode.DocumentSymbol(name, detail, kind, range, range);
+    }
+    
     provideDocumentSymbols(document, token) {
         const symbols = [];
         
@@ -216,136 +237,55 @@ class YpsilonDocumentSymbolProvider {
             // Match function declarations: fn functionName(...)
             const fnMatch = text.match(/fn\s+(\w+)\s*\(/);
             if (fnMatch) {
-                const name = fnMatch[1];
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Function',
-                    vscode.SymbolKind.Function,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(fnMatch[1], 'Function', vscode.SymbolKind.Function, i, text));
             }
             
             // Match class declarations: class ClassName
             const classMatch = text.match(/class\s+(\w+)/);
             if (classMatch) {
-                const name = classMatch[1];
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Class',
-                    vscode.SymbolKind.Class,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(classMatch[1], 'Class', vscode.SymbolKind.Class, i, text));
             }
             
             // Match struct declarations: struct StructName
             const structMatch = text.match(/struct\s+(\w+)/);
             if (structMatch) {
-                const name = structMatch[1];
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Struct',
-                    vscode.SymbolKind.Struct,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(structMatch[1], 'Struct', vscode.SymbolKind.Struct, i, text));
             }
             
             // Match enum declarations: enum EnumName
             const enumMatch = text.match(/enum\s+(\w+)/);
             if (enumMatch) {
-                const name = enumMatch[1];
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Enum',
-                    vscode.SymbolKind.Enum,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(enumMatch[1], 'Enum', vscode.SymbolKind.Enum, i, text));
             }
             
             // Match constants: const Type NAME = value
             const constMatch = text.match(/const\s+\w+\s+(\w+)\s*=/);
             if (constMatch) {
-                const name = constMatch[1];
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Constant',
-                    vscode.SymbolKind.Constant,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(constMatch[1], 'Constant', vscode.SymbolKind.Constant, i, text));
             }
             
             // Match mutable variables: mut Type varName = value
             const mutMatch = text.match(/mut\s+\w+\s+(\w+)\s*=/);
             if (mutMatch) {
-                const name = mutMatch[1];
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Variable',
-                    vscode.SymbolKind.Variable,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(mutMatch[1], 'Variable', vscode.SymbolKind.Variable, i, text));
             }
             
             // Match event handlers: on start/loop
             const eventMatch = text.match(/on\s+(start|loop)/);
             if (eventMatch) {
-                const name = `on ${eventMatch[1]}`;
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Event Handler',
-                    vscode.SymbolKind.Event,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(`on ${eventMatch[1]}`, 'Event Handler', vscode.SymbolKind.Event, i, text));
             }
             
             // Match tasks: task taskName every ...
             const taskMatch = text.match(/task\s+(\w+)\s+/);
             if (taskMatch) {
-                const name = taskMatch[1];
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Task',
-                    vscode.SymbolKind.Function,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(taskMatch[1], 'Task', vscode.SymbolKind.Function, i, text));
             }
             
             // Match interrupts: interrupt handlerName on ...
             const interruptMatch = text.match(/interrupt\s+(\w+)\s+/);
             if (interruptMatch) {
-                const name = interruptMatch[1];
-                const range = new vscode.Range(i, 0, i, text.length);
-                const symbol = new vscode.DocumentSymbol(
-                    name,
-                    'Interrupt Handler',
-                    vscode.SymbolKind.Event,
-                    range,
-                    range
-                );
-                symbols.push(symbol);
+                symbols.push(this.createSymbol(interruptMatch[1], 'Interrupt Handler', vscode.SymbolKind.Event, i, text));
             }
         }
         
