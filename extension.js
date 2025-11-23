@@ -4,6 +4,355 @@ const vscode = require('vscode');
 const { spawn } = require('child_process');
 const path = require('path');
 
+// Language data for IntelliSense
+const KEYWORDS = [
+    'if', 'else', 'while', 'for', 'repeat', 'until', 'times', 'match', 'switch',
+    'case', 'default', 'return', 'break', 'continue', 'on', 'interrupt', 'task',
+    'every', 'background', 'atomic', 'signal', 'emit', 'wait', 'timeout', 'load',
+    'use', 'config', 'alias', 'react', 'start', 'loop', 'rising', 'falling',
+    'change', 'new'
+];
+
+const STORAGE_KEYWORDS = ['fn', 'class', 'struct', 'enum', 'const', 'mut'];
+
+const TYPES = [
+    'int', 'float', 'bool', 'string', 'void', 'char', 'byte',
+    'i8', 'i16', 'i32', 'i64', 'u8', 'u16', 'u32', 'u64',
+    'f32', 'f64'
+];
+
+const CONSTANTS = [
+    'true', 'false', 'HIGH', 'LOW', 'INPUT', 'OUTPUT', 'INPUT_PULLUP',
+    'self', 'this'
+];
+
+const ARDUINO_FUNCTIONS = [
+    { name: 'pinMode', params: ['pin: int', 'mode: int'], returns: 'void', doc: 'Configures the specified pin to behave either as an input or an output.' },
+    { name: 'digitalWrite', params: ['pin: int', 'value: int'], returns: 'void', doc: 'Write a HIGH or LOW value to a digital pin.' },
+    { name: 'digitalRead', params: ['pin: int'], returns: 'int', doc: 'Reads the value from a specified digital pin, either HIGH or LOW.' },
+    { name: 'analogWrite', params: ['pin: int', 'value: int'], returns: 'void', doc: 'Writes an analog value (PWM wave) to a pin.' },
+    { name: 'analogRead', params: ['pin: int'], returns: 'int', doc: 'Reads the value from the specified analog pin.' },
+    { name: 'delay', params: ['ms: int'], returns: 'void', doc: 'Pauses the program for the amount of time (in milliseconds) specified.' },
+    { name: 'delayMicroseconds', params: ['us: int'], returns: 'void', doc: 'Pauses the program for the amount of time (in microseconds) specified.' },
+    { name: 'millis', params: [], returns: 'int', doc: 'Returns the number of milliseconds since the program started.' },
+    { name: 'micros', params: [], returns: 'int', doc: 'Returns the number of microseconds since the program started.' },
+    { name: 'print', params: ['value: any'], returns: 'void', doc: 'Prints data to the serial port as human-readable ASCII text.' },
+    { name: 'println', params: ['value: any'], returns: 'void', doc: 'Prints data to the serial port as human-readable ASCII text followed by a newline.' },
+    { name: 'map', params: ['value: int', 'fromLow: int', 'fromHigh: int', 'toLow: int', 'toHigh: int'], returns: 'int', doc: 'Re-maps a number from one range to another.' },
+    { name: 'constrain', params: ['value: int', 'min: int', 'max: int'], returns: 'int', doc: 'Constrains a number to be within a range.' },
+    { name: 'abs', params: ['x: int'], returns: 'int', doc: 'Returns the absolute value of a number.' },
+    { name: 'min', params: ['x: int', 'y: int'], returns: 'int', doc: 'Returns the smaller of two numbers.' },
+    { name: 'max', params: ['x: int', 'y: int'], returns: 'int', doc: 'Returns the larger of two numbers.' },
+    { name: 'pow', params: ['base: float', 'exponent: float'], returns: 'float', doc: 'Calculates the value of a number raised to a power.' },
+    { name: 'sqrt', params: ['x: float'], returns: 'float', doc: 'Calculates the square root of a number.' },
+    { name: 'random', params: ['min: int', 'max: int'], returns: 'int', doc: 'Generates pseudo-random numbers.' },
+    { name: 'randomSeed', params: ['seed: int'], returns: 'void', doc: 'Initializes the pseudo-random number generator.' }
+];
+
+const DIRECTIVES = [
+    { name: '@main', doc: 'Marks the file as the main entry point of the program.' },
+    { name: '@cpp', doc: 'Inline C++ code block.' },
+    { name: '@ininterrupt', doc: 'Marks function as interrupt-safe.' }
+];
+
+/**
+ * Completion provider for Ypsilon Script
+ */
+class YpsilonCompletionProvider {
+    provideCompletionItems(document, position, token, context) {
+        const completions = [];
+        
+        // Add keywords
+        KEYWORDS.forEach(keyword => {
+            const item = new vscode.CompletionItem(keyword, vscode.CompletionItemKind.Keyword);
+            item.detail = 'Ypsilon Script keyword';
+            completions.push(item);
+        });
+        
+        // Add storage keywords
+        STORAGE_KEYWORDS.forEach(keyword => {
+            const item = new vscode.CompletionItem(keyword, vscode.CompletionItemKind.Keyword);
+            item.detail = 'Storage/Declaration keyword';
+            completions.push(item);
+        });
+        
+        // Add types
+        TYPES.forEach(type => {
+            const item = new vscode.CompletionItem(type, vscode.CompletionItemKind.TypeParameter);
+            item.detail = 'Type';
+            completions.push(item);
+        });
+        
+        // Add constants
+        CONSTANTS.forEach(constant => {
+            const item = new vscode.CompletionItem(constant, vscode.CompletionItemKind.Constant);
+            item.detail = 'Constant';
+            completions.push(item);
+        });
+        
+        // Add Arduino functions
+        ARDUINO_FUNCTIONS.forEach(func => {
+            const item = new vscode.CompletionItem(func.name, vscode.CompletionItemKind.Function);
+            item.detail = `${func.name}(${func.params.join(', ')})`;
+            item.documentation = new vscode.MarkdownString(func.doc);
+            item.insertText = new vscode.SnippetString(`${func.name}($1)`);
+            completions.push(item);
+        });
+        
+        // Add directives
+        DIRECTIVES.forEach(directive => {
+            const item = new vscode.CompletionItem(directive.name, vscode.CompletionItemKind.Keyword);
+            item.detail = 'Directive';
+            item.documentation = new vscode.MarkdownString(directive.doc);
+            completions.push(item);
+        });
+        
+        return completions;
+    }
+}
+
+/**
+ * Hover provider for Ypsilon Script
+ */
+class YpsilonHoverProvider {
+    provideHover(document, position, token) {
+        const range = document.getWordRangeAtPosition(position);
+        if (!range) return null;
+        
+        const word = document.getText(range);
+        
+        // Check if it's an Arduino function
+        const func = ARDUINO_FUNCTIONS.find(f => f.name === word);
+        if (func) {
+            const signature = `${func.returns} ${func.name}(${func.params.join(', ')})`;
+            const contents = new vscode.MarkdownString();
+            contents.appendCodeblock(signature, 'ypsilon-script');
+            contents.appendMarkdown('\n\n' + func.doc);
+            return new vscode.Hover(contents);
+        }
+        
+        // Check if it's a keyword
+        if (KEYWORDS.includes(word)) {
+            return new vscode.Hover(new vscode.MarkdownString(`**Keyword:** \`${word}\``));
+        }
+        
+        // Check if it's a type
+        if (TYPES.includes(word)) {
+            return new vscode.Hover(new vscode.MarkdownString(`**Type:** \`${word}\``));
+        }
+        
+        // Check if it's a constant
+        if (CONSTANTS.includes(word)) {
+            return new vscode.Hover(new vscode.MarkdownString(`**Constant:** \`${word}\``));
+        }
+        
+        // Check if it's a directive
+        const directive = DIRECTIVES.find(d => d.name === word);
+        if (directive) {
+            const contents = new vscode.MarkdownString();
+            contents.appendMarkdown(`**Directive:** \`${directive.name}\`\n\n`);
+            contents.appendMarkdown(directive.doc);
+            return new vscode.Hover(contents);
+        }
+        
+        return null;
+    }
+}
+
+/**
+ * Signature help provider for Ypsilon Script
+ */
+class YpsilonSignatureHelpProvider {
+    provideSignatureHelp(document, position, token, context) {
+        const line = document.lineAt(position.line).text;
+        const beforeCursor = line.substring(0, position.character);
+        
+        // Find function call
+        const match = beforeCursor.match(/(\w+)\s*\(/);
+        if (!match) return null;
+        
+        const funcName = match[1];
+        const func = ARDUINO_FUNCTIONS.find(f => f.name === funcName);
+        
+        if (!func) return null;
+        
+        const signatureHelp = new vscode.SignatureHelp();
+        const signature = new vscode.SignatureInformation(
+            `${func.name}(${func.params.join(', ')})`,
+            new vscode.MarkdownString(func.doc)
+        );
+        
+        // Add parameter information
+        func.params.forEach(param => {
+            signature.parameters.push(new vscode.ParameterInformation(param));
+        });
+        
+        signatureHelp.signatures = [signature];
+        signatureHelp.activeSignature = 0;
+        
+        // Calculate active parameter based on comma count
+        const paramMatch = beforeCursor.match(/\(/);
+        if (paramMatch) {
+            const afterParen = beforeCursor.substring(paramMatch.index + 1);
+            const commaCount = (afterParen.match(/,/g) || []).length;
+            signatureHelp.activeParameter = Math.min(commaCount, func.params.length - 1);
+        }
+        
+        return signatureHelp;
+    }
+}
+
+/**
+ * Document symbol provider for Ypsilon Script
+ */
+class YpsilonDocumentSymbolProvider {
+    provideDocumentSymbols(document, token) {
+        const symbols = [];
+        
+        for (let i = 0; i < document.lineCount; i++) {
+            const line = document.lineAt(i);
+            const text = line.text;
+            
+            // Match function declarations: fn functionName(...)
+            const fnMatch = text.match(/fn\s+(\w+)\s*\(/);
+            if (fnMatch) {
+                const name = fnMatch[1];
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Function',
+                    vscode.SymbolKind.Function,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+            
+            // Match class declarations: class ClassName
+            const classMatch = text.match(/class\s+(\w+)/);
+            if (classMatch) {
+                const name = classMatch[1];
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Class',
+                    vscode.SymbolKind.Class,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+            
+            // Match struct declarations: struct StructName
+            const structMatch = text.match(/struct\s+(\w+)/);
+            if (structMatch) {
+                const name = structMatch[1];
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Struct',
+                    vscode.SymbolKind.Struct,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+            
+            // Match enum declarations: enum EnumName
+            const enumMatch = text.match(/enum\s+(\w+)/);
+            if (enumMatch) {
+                const name = enumMatch[1];
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Enum',
+                    vscode.SymbolKind.Enum,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+            
+            // Match constants: const Type NAME = value
+            const constMatch = text.match(/const\s+\w+\s+(\w+)\s*=/);
+            if (constMatch) {
+                const name = constMatch[1];
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Constant',
+                    vscode.SymbolKind.Constant,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+            
+            // Match mutable variables: mut Type varName = value
+            const mutMatch = text.match(/mut\s+\w+\s+(\w+)\s*=/);
+            if (mutMatch) {
+                const name = mutMatch[1];
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Variable',
+                    vscode.SymbolKind.Variable,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+            
+            // Match event handlers: on start/loop
+            const eventMatch = text.match(/on\s+(start|loop)/);
+            if (eventMatch) {
+                const name = `on ${eventMatch[1]}`;
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Event Handler',
+                    vscode.SymbolKind.Event,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+            
+            // Match tasks: task taskName every ...
+            const taskMatch = text.match(/task\s+(\w+)\s+/);
+            if (taskMatch) {
+                const name = taskMatch[1];
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Task',
+                    vscode.SymbolKind.Function,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+            
+            // Match interrupts: interrupt handlerName on ...
+            const interruptMatch = text.match(/interrupt\s+(\w+)\s+/);
+            if (interruptMatch) {
+                const name = interruptMatch[1];
+                const range = new vscode.Range(i, 0, i, text.length);
+                const symbol = new vscode.DocumentSymbol(
+                    name,
+                    'Interrupt Handler',
+                    vscode.SymbolKind.Event,
+                    range,
+                    range
+                );
+                symbols.push(symbol);
+            }
+        }
+        
+        return symbols;
+    }
+}
+
 /**
  * Helper function to execute ysc commands via npx
  * @param {string[]} args - Command arguments for ysc
@@ -60,6 +409,40 @@ function executeYscCommand(args, cwd, callback) {
 
 function activate(context) {
     console.log('Ypsilon Script extension is now active!');
+
+    // Register IntelliSense providers for Ypsilon Script
+    const ysSelector = { scheme: 'file', language: 'ypsilon-script' };
+    
+    // Register completion provider
+    const completionProvider = vscode.languages.registerCompletionItemProvider(
+        ysSelector,
+        new YpsilonCompletionProvider(),
+        '.' // Trigger on dot for potential member access
+    );
+    
+    // Register hover provider
+    const hoverProvider = vscode.languages.registerHoverProvider(
+        ysSelector,
+        new YpsilonHoverProvider()
+    );
+    
+    // Register signature help provider
+    const signatureHelpProvider = vscode.languages.registerSignatureHelpProvider(
+        ysSelector,
+        new YpsilonSignatureHelpProvider(),
+        '(', ',' // Trigger on opening parenthesis and comma
+    );
+    
+    // Register document symbol provider (for outline view)
+    const symbolProvider = vscode.languages.registerDocumentSymbolProvider(
+        ysSelector,
+        new YpsilonDocumentSymbolProvider()
+    );
+    
+    context.subscriptions.push(completionProvider);
+    context.subscriptions.push(hoverProvider);
+    context.subscriptions.push(signatureHelpProvider);
+    context.subscriptions.push(symbolProvider);
 
     // Command: Compile YS file
     let buildCommand = vscode.commands.registerCommand('ypsilon-script.build', async () => {
