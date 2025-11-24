@@ -9,6 +9,13 @@ Language support for [Ypsilon Script](https://github.com/ycharfi09/ypsilon-scrip
 
 This extension provides comprehensive language support for Ypsilon Script (.ys files):
 
+### 🧠 IntelliSense Support
+- **Auto-completion** - Smart suggestions for keywords, types, functions, and constants as you type
+- **Hover information** - View documentation by hovering over Arduino functions, keywords, and types
+- **Signature help** - See function parameters and documentation while typing function calls
+- **Document symbols** - Navigate your code structure with the Outline view (functions, classes, variables, etc.)
+- **Go to symbol** - Quickly jump to any symbol in your file with `Ctrl+Shift+O` / `Cmd+Shift+O`
+
 ### 🎨 Syntax Highlighting
 - Keywords: `fn`, `class`, `struct`, `enum`, `on`, `match`, `switch`
 - Control flow: `if`, `else`, `while`, `for`, `repeat`, `until`, `times`, `return`, `break`, `continue`
@@ -91,6 +98,37 @@ Execute Ypsilon Script CLI commands directly from VS Code:
 - **Auto-indentation** inside blocks
 - **Comment toggling** with `#` (line comments)
 - **Code folding** for blocks and regions
+
+## Using IntelliSense
+
+The extension provides IntelliSense support to enhance your coding experience:
+
+### Auto-Completion
+- Start typing any keyword, type, or function name
+- Press `Ctrl+Space` to manually trigger suggestions
+- Use arrow keys to navigate and `Enter` to select
+- IntelliSense suggests:
+  - Keywords: `if`, `for`, `while`, `match`, `fn`, `class`, etc.
+  - Types: `int`, `float`, `bool`, `string`, `i8`, `u32`, etc.
+  - Arduino functions: `pinMode`, `digitalWrite`, `analogRead`, etc.
+  - Constants: `HIGH`, `LOW`, `INPUT`, `OUTPUT`, etc.
+
+### Hover Documentation
+- Hover your mouse over any Arduino function to see its documentation
+- View function signatures with parameter types and return types
+- Works for all built-in functions like `digitalWrite`, `analogRead`, `delay`, etc.
+
+### Function Signature Help
+- When calling a function, type the opening parenthesis `(`
+- See parameter hints and documentation as you type
+- Press `Ctrl+Shift+Space` to manually trigger signature help
+- Use comma to move between parameters
+
+### Navigate Your Code
+- Open the **Outline view** in the Explorer sidebar to see all symbols
+- Press `Ctrl+Shift+O` (Windows/Linux) or `Cmd+Shift+O` (Mac) to open symbol search
+- Quickly jump to functions, classes, variables, and event handlers
+- Breadcrumbs at the top of the editor show your current location
 
 ### 📚 Language Features
 - File extension: `.ys`
